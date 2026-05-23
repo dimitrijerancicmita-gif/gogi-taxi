@@ -14,3 +14,10 @@
 }
 .row  { font-size: 12px; color: var(--text2); margin-top: 3px; }
 .time { font-size: 11px; color: var(--text3); margin-top: 5px; }
+
+.tel {
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 600;
+}
+.tel:hover { text-decoration: underline; }

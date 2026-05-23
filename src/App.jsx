@@ -3,37 +3,33 @@ import LoginPage  from './pages/LoginPage.jsx';
 import MapPage    from './pages/MapPage.jsx';
 import AdminPage  from './pages/AdminPage.jsx';
 import DriverPage from './pages/DriverPage.jsx';
+import TestPage   from './pages/TestPage.jsx';
 import { INIT_VEHICLES } from './constants/index.js';
 
-/**
- * App.jsx — Root component
- *
- * Screens:
- *   'login'  → LoginPage    (odabir uloge)
- *   'map'    → MapPage      (mušterija ili admin — vidi mapu)
- *   'admin'  → AdminPage    (upravljanje vozilima)
- *   'driver' → DriverPage   (vozač — šalje GPS)
- *
- * URL shortcut za vozača:  ?driver=true
- * npr: http://localhost:3000?driver=true
- */
-
-const isDriverURL = new URLSearchParams(window.location.search).get('driver') === 'true';
+const params      = new URLSearchParams(window.location.search);
+const isDriverURL = params.get('driver') === 'true';
+const isTestURL   = params.get('test')   === 'true';
 
 export default function App() {
-  const [screen,   setScreen]   = useState(isDriverURL ? 'driver' : 'login');
+  const [screen,   setScreen]   = useState(
+    isTestURL   ? 'test'   :
+    isDriverURL ? 'driver' : 'login'
+  );
   const [role,     setRole]     = useState(null);
   const [vehicles, setVehicles] = useState(INIT_VEHICLES);
   const [orders,   setOrders]   = useState([]);
 
+  if (screen === 'test')
+    return <TestPage onBack={() => setScreen('login')} />;
+
   if (screen === 'driver')
-    return <DriverPage onBack={() => setScreen('login')} />;
+    return <DriverPage vehicles={vehicles} onBack={() => setScreen('login')} />;
 
   if (screen === 'login')
     return (
       <LoginPage
-        onLogin={(r)  => { setRole(r); setScreen('map'); }}
-        onDriver={()  => setScreen('driver')}
+        onLogin={r => { setRole(r); setScreen('map'); }}
+        onDriver={() => setScreen('driver')}
       />
     );
 

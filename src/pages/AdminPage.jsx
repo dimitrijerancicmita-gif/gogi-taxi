@@ -40,7 +40,7 @@ export default function AdminPage({ vehicles, setVehicles, orders, onBack }) {
           <div />
         </div>
         <div style={{ flex: 1, overflow: 'auto' }}>
-          <DriverPage />
+          <DriverPage vehicles={vehicles} />
         </div>
       </div>
     );
