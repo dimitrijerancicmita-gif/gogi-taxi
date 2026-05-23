@@ -1,0 +1,22 @@
+/* VehicleCard.module.css */
+
+.card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 13px; cursor: pointer;
+  transition: all 0.15s;
+}
+.card:hover   { background: var(--bg3); border-color: var(--gold-dim); }
+.card.selected { border-color: var(--gold); background: var(--bg3); box-shadow: 0 0 0 1px var(--gold-dim) inset; }
+
+.top   { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.name  { font-weight: 600; font-size: 13px; color: var(--text); }
+.driver { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+.bottom { display: flex; justify-content: space-between; align-items: center; }
+.phone  { font-size: 12px; color: var(--text3); }
+
+.statusSel {
+  background: var(--bg0); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text); font-size: 11px; padding: 3px 6px;
+  cursor: pointer; outline: none;
+}

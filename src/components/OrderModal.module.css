@@ -1,0 +1,32 @@
+/* OrderModal.module.css */
+
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.72); backdrop-filter: blur(5px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9000; animation: fadeIn 0.2s ease;
+}
+.box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px 28px 24px;
+  width: 420px; max-width: 95vw;
+  animation: badgePop 0.25s ease;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 24px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 6px;
+}
+.sub    { color: var(--text2); font-size: 13px; margin-bottom: 22px; }
+.errMsg { color: var(--red); font-size: 12px; margin-bottom: 8px; }
+
+.btns { display: flex; gap: 10px; margin-top: 22px; }
+.cancel, .confirm {
+  flex: 1; padding: 12px; border-radius: 8px; cursor: pointer;
+  font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700;
+  letter-spacing: 1px; transition: all 0.15s;
+}
+.cancel  { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+.cancel:hover  { background: var(--bg4); color: var(--text); }
+.confirm { background: linear-gradient(135deg, var(--gold), #e8920a); color: #000; border: none; }
+.confirm:hover { filter: brightness(1.1); transform: translateY(-1px); }

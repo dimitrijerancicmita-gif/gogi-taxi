@@ -1,0 +1,68 @@
+/* MapPage.module.css */
+
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Map */
+.mapWrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Status pills (top center of map) ───────────────────── */
+.pills {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 500;
+  pointer-events: none;
+}
+
+.gpsPill,
+.serverPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid #ccc;
+  color: #444;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  /* NO backdrop-filter — causes artifacts on some browsers */
+}
+
+.gpsPill[data-status="ok"]     { border-color: #2563eb; color: #1d4ed8; background: rgba(239,246,255,0.95); }
+.gpsPill[data-status="denied"] { border-color: #dc2626; color: #b91c1c; background: rgba(254,242,242,0.95); }
+.gpsPill[data-status="loading"]{ border-color: #d97706; color: #92400e; background: rgba(255,251,235,0.95); }
+
+.serverPill[data-ok="true"]  { border-color: #16a34a; color: #15803d; background: rgba(240,253,244,0.95); }
+.serverPill[data-ok="false"] { border-color: #ca8a04; color: #854d0e; background: rgba(254,252,232,0.95); }
+
+/* Live red dot on vehicle marker */
+:global(.cm-live) {
+  position: absolute;
+  top: -3px; right: -3px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 2px solid #fff;
+  display: block;
+}
