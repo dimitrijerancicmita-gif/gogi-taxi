@@ -10,41 +10,41 @@
 .card {
   background: var(--bg2); border: 1px solid var(--border);
   border-radius: 18px; padding: 26px 22px;
-  width: 400px; max-width: 100%;
+  width: 420px; max-width: 100%;
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
   animation: fadeIn 0.3s ease;
 }
 
-/* Vehicle selector */
-.logo  { font-size: 40px; text-align: center; margin-bottom: 8px; }
-.title { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 1.5px; text-align: center; color: var(--gold); }
-.sub   { font-size: 12px; color: var(--text3); text-align: center; margin: 4px 0 18px; }
+.logo  { font-size: 44px; text-align: center; margin-bottom: 8px; }
+.title { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 1.5px; text-align: center; color: var(--gold); }
+.sub   { font-size: 12px; color: var(--text3); text-align: center; margin: 4px 0 20px; }
 
-.vehicleList { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+/* Vehicle list */
+.vehicleList { display: flex; flex-direction: column; gap: 9px; margin-bottom: 18px; }
 
 .vehicleBtn {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px; border-radius: var(--radius);
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 15px; border-radius: var(--radius);
   background: var(--bg3); border: 1.5px solid var(--border);
   cursor: pointer; transition: all 0.15s; text-align: left; width: 100%;
 }
-.vehicleBtn:hover { background: var(--bg4); border-color: var(--gold-dim); }
-.vehicleSel       { border-color: var(--gold) !important; background: rgba(245,166,35,0.08) !important; box-shadow: 0 0 0 1px var(--gold-dim); }
+.vehicleBtn:hover { background: var(--bg4); border-color: var(--gold-dim); transform: translateX(2px); }
+.vehicleSel { border-color: var(--gold) !important; background: rgba(245,166,35,0.08) !important; box-shadow: 0 0 0 1px var(--gold-dim); }
 
-.vIcon { font-size: 20px; flex-shrink: 0; }
-.vName { font-weight: 700; font-size: 14px; color: var(--text); }
-.vCar  { font-size: 12px; color: var(--text3); margin-top: 1px; display: block; }
-
-.noV { color: var(--text3); font-style: italic; text-align: center; padding: 16px 0; font-size: 13px; }
+.vIcon { font-size: 26px; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+.vInfo { display: flex; flex-direction: column; gap: 1px; }
+.vName { font-weight: 700; font-size: 15px; color: var(--text); }
+.vCar  { font-size: 12px; color: var(--text3); }
+.noV   { color: var(--text3); font-style: italic; text-align: center; padding: 20px 0; font-size: 13px; }
 
 .startBtn {
-  width: 100%; padding: 14px; border: none; border-radius: var(--radius);
+  width: 100%; padding: 15px; border: none; border-radius: var(--radius);
   background: linear-gradient(135deg, var(--green), #15803d);
   color: #fff; font-family: 'Rajdhani', sans-serif;
-  font-size: 17px; font-weight: 700; letter-spacing: 1.5px; cursor: pointer;
+  font-size: 18px; font-weight: 700; letter-spacing: 1.5px; cursor: pointer;
   transition: all 0.15s; box-shadow: 0 4px 16px rgba(22,163,74,0.25);
 }
-.startBtn:hover    { filter: brightness(1.1); transform: translateY(-1px); }
+.startBtn:hover    { filter: brightness(1.1); transform: translateY(-2px); }
 .startBtn:disabled { opacity: 0.4; cursor: not-allowed; filter: none; transform: none; }
 
 .backBtn {
@@ -57,17 +57,19 @@
 
 /* Active GPS view */
 .driverHeader {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  margin-bottom: 18px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 18px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
 }
+.driverLeft { display: flex; align-items: center; gap: 12px; }
+.driverCarIcon { font-size: 36px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
 .driverName { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); }
-.driverId   { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.driverId   { font-size: 12px; color: var(--text3); margin-top: 1px; }
 
 .connDot  { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 99px; }
 .connOk   { background: var(--green-dim); color: var(--green); }
 .connOff  { background: var(--red-dim);   color: var(--red);   }
 
-/* GPS box */
 .gpsBox {
   background: var(--bg3); border: 1.5px solid var(--border);
   border-radius: var(--radius); padding: 16px; margin-bottom: 18px;
@@ -78,21 +80,20 @@
 .gpsPulse { box-shadow: 0 0 0 2px var(--green), 0 0 14px rgba(34,209,96,0.25); border-color: var(--green); }
 .gpsOff   { opacity: 0.5; border-style: dashed; }
 
-.gpsIcon   { font-size: 22px; }
-.gpsCoords { display: flex; gap: 14px; font-family: monospace; font-size: 13px; color: var(--text); }
-.gpsAcc    { font-size: 11px; color: var(--text3); }
-.gpsSent   { font-size: 11px; color: var(--green); font-weight: 600; }
-.gpsErr    { color: var(--red); font-size: 13px; }
+.gpsIcon    { font-size: 22px; }
+.gpsCoords  { display: flex; gap: 14px; font-family: monospace; font-size: 13px; color: var(--text); }
+.gpsAcc     { font-size: 11px; color: var(--text3); }
+.gpsSent    { font-size: 11px; color: var(--green); font-weight: 600; }
+.gpsErr     { color: var(--red); font-size: 13px; }
 .gpsLoading { color: var(--text3); font-style: italic; font-size: 13px; }
 
-/* Status buttons */
 .statusLabel { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 7px; }
 .statusBtns  { display: flex; gap: 7px; margin-bottom: 16px; }
 
 .statusBtn {
   flex: 1; padding: 9px 5px; border-radius: 8px;
   border: 1px solid var(--border); background: var(--bg3);
-  color: var(--text2); cursor: pointer; font-size: 11px; font-weight: 600;
+  color: var(--text2); cursor: pointer; font-size: 12px; font-weight: 600;
   transition: all 0.15s;
 }
 .statusBtn:hover { background: var(--bg4); }
