@@ -38,7 +38,7 @@ export default function MapPage({
   const userMarkerRef = useRef(null);
   const userLatLng = useRef(null);
   const socketRef = useRef(null);
-  const serverOkRef = useRef(false); // da li server odgovara
+  const serverOkRef = useRef(false);
 
   const [selected, setSelected] = useState(null);
   const [sideOpen, setSideOpen] = useState(true);
@@ -47,7 +47,6 @@ export default function MapPage({
   const [gpsStatus, setGpsStatus] = useState("loading");
   const [serverConn, setServerConn] = useState(false);
 
-  /* ── 1. Init mapa ───────────────────────────────────────── */
   useEffect(() => {
     if (mapRef.current) return;
     const m = L.map(mapElRef.current, {
@@ -63,16 +62,16 @@ export default function MapPage({
     return () => {
       mapRef.current?.remove();
       mapRef.current = null;
+      markersRef.current = {};
+      userMarkerRef.current = null;
     };
   }, []);
 
-  /* ── 2. GPS korisnika (plavi dot) ───────────────────────── */
   useEffect(() => {
     if (!navigator.geolocation) {
       setGpsStatus("denied");
       return;
     }
-
     const placeDot = (lat, lng) => {
       const m = mapRef.current;
       if (!m) return;
@@ -81,9 +80,7 @@ export default function MapPage({
         userMarkerRef.current.setLatLng([lat, lng]);
       } else {
         const icon = L.divIcon({
-          html: `<div style="width:18px;height:18px;border-radius:50%;
-            background:#2563eb;border:3px solid #fff;
-            box-shadow:0 0 0 6px rgba(37,99,235,0.22);"></div>`,
+          html: `<div style="width:18px;height:18px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 0 0 6px rgba(37,99,235,0.22);"></div>`,
           className: "",
           iconSize: [18, 18],
           iconAnchor: [9, 9],
@@ -97,7 +94,6 @@ export default function MapPage({
         push("📍 Lokacija pronađena!", "info");
       }
     };
-
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => placeDot(coords.latitude, coords.longitude),
       () => {
@@ -105,7 +101,6 @@ export default function MapPage({
       },
       { enableHighAccuracy: true, timeout: 10_000 },
     );
-
     const wid = navigator.geolocation.watchPosition(
       ({ coords }) => placeDot(coords.latitude, coords.longitude),
       () => {},
@@ -115,36 +110,18 @@ export default function MapPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* ── 3. Socket.io — prima live lokacije vozača ──────────── */
   useEffect(() => {
-    const socket = io(SERVER_URL, {
-      transports: ["websocket"], // koristi websocket umesto pollinga
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-      timeout: 10000,
-      autoConnect: true,
-    });
-
+    const socket = io(SERVER_URL, { reconnectionAttempts: 5, timeout: 4000 });
     socketRef.current = socket;
-
     socket.on("connect", () => {
-      console.log("✅ Socket povezan");
-
       setServerConn(true);
       serverOkRef.current = true;
     });
-
-    socket.on("disconnect", (reason) => {
-      console.log("⚠️ Socket diskonektovan:", reason);
-
+    socket.on("disconnect", () => {
       setServerConn(false);
       serverOkRef.current = false;
     });
-
-    socket.on("connect_error", (err) => {
-      console.error("❌ Socket greska:", err.message);
-
+    socket.on("connect_error", () => {
       setServerConn(false);
       serverOkRef.current = false;
     });
@@ -154,9 +131,9 @@ export default function MapPage({
     });
 
     socket.on("driver:updated", (d) => {
+      console.log("📡 driver updated:", JSON.stringify(d));
       setVehicles((prev) => {
         const exists = prev.find((v) => String(v.id) === String(d.driverId));
-
         if (exists) {
           return prev.map((v) =>
             String(v.id) === String(d.driverId)
@@ -169,7 +146,6 @@ export default function MapPage({
               : v,
           );
         }
-
         return [
           ...prev,
           {
@@ -194,18 +170,12 @@ export default function MapPage({
       );
     });
 
-    return () => {
-      console.log("🔌 Socket zatvoren");
-      socket.disconnect();
-    };
-
+    return () => socket.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* ── 4. Simulacija kretanja (fallback kad nema servera) ─── */
   useEffect(() => {
     const id = setInterval(() => {
-      // Simuliraj samo ako server NIJE povezan
       if (serverOkRef.current) return;
       setVehicles((prev) =>
         prev.map((v) =>
@@ -216,15 +186,12 @@ export default function MapPage({
     return () => clearInterval(id);
   }, [setVehicles]);
 
-  /* ── 5. Sync Leaflet markera ────────────────────────────── */
   useEffect(() => {
     const m = mapRef.current;
     if (!m) return;
-
     vehicles.forEach((v) => {
       if (v.lat == null || v.lng == null) return;
       const icon = buildIcon(v, selected?.id === v.id);
-
       if (markersRef.current[v.id]) {
         markersRef.current[v.id].setLatLng([v.lat, v.lng]);
         markersRef.current[v.id].setIcon(icon);
@@ -238,7 +205,6 @@ export default function MapPage({
         markersRef.current[v.id] = mk;
       }
     });
-
     Object.keys(markersRef.current).forEach((id) => {
       if (!vehicles.find((v) => String(v.id) === id)) {
         markersRef.current[id].remove();
@@ -247,17 +213,14 @@ export default function MapPage({
     });
   }, [vehicles, selected]);
 
-  /* ── 6. Narudžba ────────────────────────────────────────── */
   const handlePlaceOrder = (form) => {
     const lat = userLatLng.current?.lat ?? MAP_CENTER[0];
     const lng = userLatLng.current?.lng ?? MAP_CENTER[1];
     const nearest = nearestFreeVehicle(vehicles, lat, lng);
-
     if (!nearest) {
       push("❌ Nema slobodnih vozila! Pozovite: 060/60-50-450", "error");
       return;
     }
-
     const eta = etaMinutes(nearest.km);
     const order = {
       id: Date.now(),
@@ -269,13 +232,11 @@ export default function MapPage({
       eta: eta + " min",
       time: nowTime(),
     };
-
     setOrders((prev) => [order, ...prev]);
     setVehicles((prev) =>
       prev.map((v) => (v.id === nearest.id ? { ...v, status: "zauzet" } : v)),
     );
     push(`✅ ${nearest.driver} je na putu! Dolazak za ~${eta} min.`, "success");
-
     setTimeout(() => {
       setOrders((prev) =>
         prev.map((o) => (o.id === order.id ? { ...o, status: "Završena" } : o)),
@@ -310,11 +271,8 @@ export default function MapPage({
         onLogout={onLogout}
         onOrderClick={() => setShowOrder(true)}
       />
-
       <div className={styles.mapWrap}>
         <div ref={mapElRef} className={styles.map} />
-
-        {/* Pills */}
         <div className={styles.pills}>
           <div className={styles.gpsPill} data-status={gpsStatus}>
             {gpsStatus === "loading" && "⏳ GPS…"}
@@ -325,7 +283,6 @@ export default function MapPage({
             {serverConn ? "🟢 Live" : "🟡 Demo mod"}
           </div>
         </div>
-
         <button
           className={styles.toggle}
           onClick={() => setSideOpen((p) => !p)}
@@ -333,7 +290,6 @@ export default function MapPage({
           {sideOpen ? "◀" : "▶"}
         </button>
       </div>
-
       {showOrder && (
         <OrderModal
           vehicles={vehicles}
@@ -341,13 +297,11 @@ export default function MapPage({
           onSubmit={handlePlaceOrder}
         />
       )}
-
       {notif && <Notification msg={notif.msg} type={notif.type} />}
     </div>
   );
 }
 
-/* ── Helpers ──────────────────────────────────────────────── */
 function mergeDrivers(existing, list) {
   const updated = [...existing];
   list.forEach((d) => {
@@ -391,6 +345,8 @@ function carEmoji(name = "") {
   if (n.includes("renault")) return "🚕";
   if (n.includes("toyota")) return "🚗";
   if (n.includes("vw") || n.includes("volkswagen")) return "🚙";
+  if (n.includes("skoda")) return "🚗";
+  if (n.includes("opel")) return "🚙";
   return "🚖";
 }
 
@@ -402,15 +358,13 @@ function buildIcon(vehicle, isSelected) {
   const liveTag = vehicle.live
     ? `<span style="position:absolute;top:-4px;right:-4px;width:9px;height:9px;border-radius:50%;background:#ef4444;border:2px solid #fff;display:block"></span>`
     : "";
-
   const html = `
     <div class="cm ${pulse} ${sel}" style="--mc:${color}">
-      <div class="cm-icon" style="border-color:${color};position:relative;font-size:22px">
+      <div class="cm-icon" style="border-color:${color};position:relative">
         ${emoji}${liveTag}
       </div>
       <div class="cm-label">${vehicle.driver}</div>
     </div>`;
-
   return L.divIcon({
     html,
     className: "",

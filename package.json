@@ -1,7 +1,7 @@
 {
   "name": "sd-gogi-taxi",
   "version": "1.0.0",
-  "description": "SD Gogi Taxi — Live Dispatch & Tracking System",
+  "description": "SD Gogi Taxi",
   "private": true,
   "type": "module",
   "scripts": {
